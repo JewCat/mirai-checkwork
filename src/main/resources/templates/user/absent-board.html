@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" type="text/css"  href="/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" type="text/css"  href="/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="/vendors/css/jsCalendar.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <style>
+        @media (max-width: 500px) {
+            .content-wrapper {
+                padding: 0.5rem !important;
+            }
+            .card-body {
+                padding: 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .card-body {
+                padding: 1rem !important;
+            }
+        }
+    </style>
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="/images/favicon.png">
+</head>
+<body>
+<div class="container-scroller">
+    <div th:replace="fragments/admin-header :: header"></div>
+    <div class="container-fluid page-body-wrapper">
+        <div th:replace="fragments/user-sidebar :: sidebar"></div>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="card">
+                    <form name="frm-absent" class="card-body d-flex flex-column align-items-center">
+                        <div class="my-jsCalendar material-theme turquoise d-flex justify-content-center" data-first-day-of-the-week="2"></div>
+                        <button class="btn btn-lg btn-gradient-success mt-4">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div th:replace="fragments/admin-footer :: footer"></div>
+        </div>
+    </div>
+    <!-- plugins:js -->
+    <script src="/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="/vendors/js/jsCalendar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="/js/off-canvas.js"></script>
+    <script src="/js/hoverable-collapse.js"></script>
+    <script src="/js/misc.js"></script>
+    <script src="/js/user/absent-board.js"></script>
+    <!-- endinject -->
+</div>
+</body>
+</html>

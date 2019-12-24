@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" type="text/css"  href="/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" type="text/css"  href="/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <style>
+        .time-display {
+            font-size: xx-large;
+        }
+        .btn-check {
+            font-size: larger !important;
+        }
+        .check-time-display {
+            font-size: x-large !important;
+        }
+    </style>
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="/images/favicon.png">
+</head>
+<body>
+<div class="container-scroller">
+    <div th:replace="fragments/admin-header :: header"></div>
+    <div class="container-fluid page-body-wrapper">
+        <div th:replace="fragments/user-sidebar :: sidebar"></div>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="card">
+                    <div class="card-body px-0">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="time-display text-success font-weight-bold"></div>
+                            <div class="date-display pt-1 pb-4"></div>
+                        </div>
+                        <form method="POST" name="check-form" class="d-flex justify-content-center mt-2">
+                            <button class="btn btn-lg btn-rounded btn-gradient-success btn-check" th:if="${checkNum} < 2" th:text="${checkNum} == 0 ? 'Check In' : 'Check Out'"></button>
+                            <button class="btn btn-lg btn-rounded btn-gradient-success btn-check" disabled th:if="${checkNum} == 2">Checked</button>
+                        </form>
+                        <table class="table table-lg mt-4">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center text-success">
+                                    <td class="font-weight-bold check-time-display" th:text="${checkInTime}"></td>
+                                    <td class="font-weight-bold check-time-display" th:text="${checkOutTime}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="fragments/admin-footer :: footer"></div>
+        </div>
+    </div>
+    <!-- plugins:js -->
+    <script src="/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="/js/off-canvas.js"></script>
+    <script src="/js/hoverable-collapse.js"></script>
+    <script src="/js/misc.js"></script>
+    <script src="/js/user/check-board.js"></script>
+    <!-- endinject -->
+</div>
+</body>
+</html>

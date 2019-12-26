@@ -1,5 +1,8 @@
+// Note
+$('.toast').toast('show')
+
+// Calendar Handle
 const myCalendar = jsCalendar.new(document.querySelector('.my-jsCalendar'));
-let currentMonth;
 let datePicked = {
     'absentFirstShift': [],
     'absentSecondShift': [],
@@ -11,6 +14,24 @@ let targetPicked = {
     'absentAllDay': []
 };
 
+myCalendar.onMonthRender(function(index, element, info) {
+    targetPicked.absentFirstShift.forEach(function(i) {
+        if (i.month === info.start.getMonth() + 1) {
+            i.target.classList.add('bg-gradient-warning', 'text-dark');
+        }
+    });
+    targetPicked.absentSecondShift.forEach(function(i) {
+        if (i.month === info.start.getMonth() + 1) {
+            i.target.classList.add('bg-gradient-primary', 'text-white');
+        }
+    });
+    targetPicked.absentAllDay.forEach(function(i) {
+        if (i.month === info.start.getMonth() + 1) {
+            i.target.classList.add('bg-gradient-danger', 'text-white');
+        }
+    });
+});
+
 myCalendar.onDateRender(function(date, element, info) {
     if (!info.isCurrent && (date.getDay() == 0 || date.getDay() == 6)) {
         element.style.fontWeight = 'bold';
@@ -19,7 +40,7 @@ myCalendar.onDateRender(function(date, element, info) {
 });
 
 myCalendar.onDateClick(function(event, date){
-    if (date.getMonth() + 1 !== currentMonth) {
+    if (date.getTime() < new Date().setHours(0,0,0,0)) {
 
     }
     else if (event.target.classList.contains('bg-gradient-warning')) {
@@ -78,34 +99,15 @@ myCalendar.onDateClick(function(event, date){
 
 });
 
-myCalendar.onMonthRender(function(index, element, info) {
-    currentMonth = info.start.getMonth() + 1;
-
-    targetPicked.absentFirstShift.forEach(function(i) {
-        if (i.month === currentMonth) {
-            i.target.classList.add('bg-gradient-warning', 'text-dark');
-        }
-    });
-    targetPicked.absentSecondShift.forEach(function(i) {
-        if (i.month === currentMonth) {
-            i.target.classList.add('bg-gradient-primary', 'text-white');
-        }
-    });
-    targetPicked.absentAllDay.forEach(function(i) {
-        if (i.month === currentMonth) {
-            i.target.classList.add('bg-gradient-danger', 'text-white');
-        }
-    });
-});
-
 myCalendar.refresh();
 
+// Submit Absent
 document.querySelector('form[name=frm-absent]').addEventListener('submit', function(evt) {
     evt.preventDefault();
 
     $.ajax({
         type: "POST",
-        url: '/absent',
+        url: '/absent/add',
         data: JSON.stringify(datePicked),
         dataType: 'json',
         contentType: 'application/json'
@@ -114,9 +116,8 @@ document.querySelector('form[name=frm-absent]').addEventListener('submit', funct
         Swal.fire({
             icon: 'success',
             title: 'OK',
-            text: '',
-        });
-        Swal.getConfirmButton().addEventListener('click', function() {
+            text: data.message,
+        }).then(rs => {
             window.location.reload();
         });
     }).fail(function(err) {
@@ -127,3 +128,42 @@ document.querySelector('form[name=frm-absent]').addEventListener('submit', funct
         });
     });
 });
+
+// Remove Absent
+document.querySelectorAll('.btn-remove-absent').forEach(function(i) {
+    i.addEventListener('click', function(evt) {
+        let absentId = evt.target.dataset.absentId;
+        Swal.fire({
+            icon: 'question',
+            title: 'Are you sure?',
+            text: '',
+            showCancelButton: true,
+        }).then(rs => {
+            if (rs.value) {
+                $.ajax({
+                    type: "POST",
+                    url: '/absent/remove',
+                    data: JSON.stringify(absentId),
+                    dataType: 'json',
+                    contentType: 'application/json'
+                }).done(function(data) {
+                    console.log(data);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OK',
+                        text: data.message,
+                    }).then(rs => {
+                        window.location.reload();
+                    });
+                }).fail(function(err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: err.responseJSON.message,
+                    });
+                });
+            }
+        })
+    });
+});
+

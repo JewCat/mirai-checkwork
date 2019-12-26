@@ -3,16 +3,19 @@ package mirai.checkwork.controllers;
 import mirai.checkwork.common.AbsentRequest;
 import mirai.checkwork.common.ApiResponse;
 import mirai.checkwork.common.Geolocation;
+import mirai.checkwork.dto.CheckWorkDTO;
 import mirai.checkwork.exceptions.OutDistanceException;
 import mirai.checkwork.services.AbsentBoardService;
 import mirai.checkwork.services.CheckBoardService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -41,11 +44,28 @@ public class ApiController {
         return res;
     }
 
-    @PostMapping("/absent")
-    public ApiResponse absentSubmit(@RequestBody AbsentRequest req) {
+    @PostMapping("/absent/add")
+    public ApiResponse addAbsent(@RequestBody AbsentRequest req) {
         ApiResponse res = new ApiResponse();
-        absentBoardService.takeAbsent(req);
+        absentBoardService.addAbsent(req);
         res.setData(req);
+        return res;
+    }
+
+    @PostMapping("/absent/remove")
+    public ApiResponse removeAbsent(@RequestBody Long absentId) {
+        ApiResponse res = new ApiResponse();
+        absentBoardService.removeAbsent(absentId);
+        res.setMessage("Successful !");
+        return res;
+    }
+
+    @GetMapping("/admin/check-board/{date}")
+    public ApiResponse getCheckList(@PathVariable("date") Long date) {
+        ApiResponse res = new ApiResponse();
+        LocalDate localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDate();
+        List<CheckWorkDTO> checkList = checkBoardService.getCheckList(localDate);
+        res.setData(checkList);
         return res;
     }
 }

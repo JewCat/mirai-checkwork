@@ -8,6 +8,7 @@ import mirai.checkwork.exceptions.OutDistanceException;
 import mirai.checkwork.models.CheckBoard;
 import mirai.checkwork.models.User;
 import mirai.checkwork.repositories.CheckBoardRepository;
+import mirai.checkwork.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,11 +19,15 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CheckBoardServiceImpl implements CheckBoardService {
     @Autowired
     CheckBoardRepository checkBoardRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Value("${geolocation.longitude}")
     double masterLongitude;
@@ -63,8 +68,8 @@ public class CheckBoardServiceImpl implements CheckBoardService {
             User currentUser = ((AuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUser();
             CheckBoard checkBoard = new CheckBoard();
-            Date date = java.sql.Date.valueOf(LocalDate.now());
-            Time time = Time.valueOf(LocalTime.now());
+            LocalDate date = LocalDate.now();
+            LocalTime time = LocalTime.now();
             checkBoard.setCheckDate(date);
             checkBoard.setCheckInTime(time);
             checkBoard.setUserId(currentUser.getId());
@@ -80,12 +85,12 @@ public class CheckBoardServiceImpl implements CheckBoardService {
             throw new OutDistanceException();
         }
         else if (!isCheckOut()) {
-            Date date = java.sql.Date.valueOf(LocalDate.now());
+            LocalDate date = LocalDate.now();
             Long userId = ((AuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUser()
                 .getId();
             CheckBoard checkBoard = checkBoardRepository.findByCheckDateAndUserId(date, userId);
-            Time time = Time.valueOf(LocalTime.now());
+            LocalTime time = LocalTime.now();
             checkBoard.setCheckOutTime(time);
             checkBoardRepository.save(checkBoard);
         }
@@ -93,7 +98,7 @@ public class CheckBoardServiceImpl implements CheckBoardService {
 
     @Override
     public boolean isCheckIn() {
-        Date date = java.sql.Date.valueOf(LocalDate.now());
+        LocalDate date = LocalDate.now();
         Long userId = ((AuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
             .getUser()
             .getId();
@@ -103,7 +108,7 @@ public class CheckBoardServiceImpl implements CheckBoardService {
 
     @Override
     public boolean isCheckOut() {
-        Date date = java.sql.Date.valueOf(LocalDate.now());
+        LocalDate date = LocalDate.now();
         Long userId = ((AuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
             .getUser()
             .getId();
@@ -112,21 +117,33 @@ public class CheckBoardServiceImpl implements CheckBoardService {
     }
 
     @Override
-    public CheckBoard getCheckRecord(LocalDate checkDate) {
+    public CheckBoard getCheckRecordOfCurrentUser(LocalDate checkDate) {
         Long userId = ((AuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
             .getUser()
             .getId();
-        return checkBoardRepository.findByCheckDateAndUserId(java.sql.Date.valueOf(checkDate), userId);
+        return checkBoardRepository.findByCheckDateAndUserId(checkDate, userId);
     }
 
     @Override
     public List<CheckWorkDTO> getCheckList(LocalDate checkDate) {
-        return null;
-//        return checkBoardRepository.getCheckList(checkDate);
-    }
-
-    @Override
-    public CheckWorkDTO getCheckDetail(Long userId, LocalDate checkDate) {
-        return null;
+        List<CheckWorkDTO> resultList = checkBoardRepository.getOnCheckWorkDTO(checkDate);
+        List<Long> checkIdList = resultList
+            .stream()
+            .map(CheckWorkDTO::getUserId)
+            .collect(Collectors.toList());
+        List<CheckWorkDTO> uncheckList = userRepository.findAll()
+            .stream()
+            .filter(user -> !checkIdList.contains(user.getId()))
+            .map(user -> {
+                CheckWorkDTO checkWorkDTO = new CheckWorkDTO();
+                checkWorkDTO.setUserId(user.getId());
+                checkWorkDTO.setUserName(user.getName());
+                checkWorkDTO.setCheckId(0L);
+                return checkWorkDTO;
+            })
+            .collect(Collectors.toList());
+        resultList.addAll(uncheckList);
+        resultList.sort((i, j) -> i.getCheckId() < j.getCheckId() ? 1 : -1);
+        return resultList;
     }
 }

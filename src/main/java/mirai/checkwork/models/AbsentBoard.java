@@ -5,6 +5,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -19,15 +20,9 @@ public class AbsentBoard {
     @Column(name = "USER_ID")
     private Long userId;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "ABSENT_DATE")
-    private Date absentDate;
+    @Column(name = "ABSENT_DATE", columnDefinition = "DATE")
+    private LocalDate absentDate;
 
     @Column(name = "ABSENT_SHIFT")
     private int shift;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", insertable = false, updatable = false)
-    @Fetch(FetchMode.JOIN)
-    private User user;
 }

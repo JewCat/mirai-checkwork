@@ -54,8 +54,7 @@ form.addEventListener('submit', function(evt) {
             icon: 'success',
             title: 'OK',
             text: data.data.checkNum == 1 ? 'You have checked-in successfully !' : 'You have checked-out successfully !',
-        });
-        Swal.getConfirmButton().addEventListener('click', function() {
+        }).then(rs => {
             window.location.reload();
         });
     }).fail(function(err) {

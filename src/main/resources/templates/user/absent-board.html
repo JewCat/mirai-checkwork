@@ -22,10 +22,39 @@
                 padding: 1.5rem !important;
             }
         }
-
         @media (max-width: 360px) {
             .card-body {
                 padding: 1rem !important;
+            }
+        }
+        .note-pill {
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+        }
+        form[name=frm-absent] {
+            flex-basis: 45%;
+        }
+        .table-container {
+            flex-basis: 55%;
+            overflow-y: auto;
+            max-height: 390px;
+        }
+        @media (max-width: 770px) {
+            form[name=frm-absent],
+            .table-container {
+                flex-basis: 100%;
+            }
+            .table-container {
+                margin-top: 4rem !important;
+            }
+            .main-content {
+                flex-direction: column !important;
+            }
+        }
+        @media (max-width: 320px) {
+            .main-content {
+                padding: 0.5rem !important;
             }
         }
     </style>
@@ -42,11 +71,57 @@
         <div th:replace="fragments/user-sidebar :: sidebar"></div>
         <div class="main-panel">
             <div class="content-wrapper">
+                <div class="toast position-fixed" data-autohide="false" style="z-index: 1000; top: 75px; right: 5px;">
+                    <div class="toast-header">
+                        <strong class="mr-auto">Note</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body bg-white d-flex flex-column">
+                        <div class="d-flex align-items-center p-1">
+                            <div class="bg-gradient-warning note-pill"></div>
+                            <div>&nbsp;&nbsp;Absent 1st shift</div>
+                        </div>
+                        <div class="d-flex align-items-center p-1">
+                            <div class="bg-gradient-primary note-pill"></div>
+                            <div>&nbsp;&nbsp;Absent 2nd shift</div>
+                        </div>
+                        <div class="d-flex align-items-center p-1">
+                            <div class="bg-gradient-danger note-pill"></div>
+                            <div>&nbsp;&nbsp;Absent all day</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
-                    <form name="frm-absent" class="card-body d-flex flex-column align-items-center">
-                        <div class="my-jsCalendar material-theme turquoise d-flex justify-content-center" data-first-day-of-the-week="2"></div>
-                        <button class="btn btn-lg btn-gradient-success mt-4">Submit</button>
-                    </form>
+                    <div class="card-body d-flex justify-content-between main-content">
+                        <form name="frm-absent" class="d-flex flex-column">
+                            <div class="my-jsCalendar material-theme turquoise d-flex justify-content-center" data-first-day-of-the-week="2"></div>
+                            <button class="btn btn-lg btn-gradient-success mt-4 mx-auto w-50">Submit</button>
+                        </form>
+                        <div class="table-container px-2">
+                            <table class="table">
+                                <thead class="bg-gradient-success text-white">
+                                    <tr class="text-center">
+                                        <th>Date</th>
+                                        <th>Shift</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center" th:each="absentItem : ${absentList}">
+                                        <td th:text="${#temporals.format(absentItem.absentDate, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${absentItem.shift <= 2 ? absentItem.shift : 'All'}"></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-gradient-warning btn-remove-absent" th:if="${absentItem.shift == 1}" th:attr="data-absent-id=${absentItem.id}">Remove</button>
+                                            <button class="btn btn-sm btn-gradient-primary btn-remove-absent" th:if="${absentItem.shift == 2}" th:attr="data-absent-id=${absentItem.id}">Remove</button>
+                                            <button class="btn btn-sm btn-gradient-danger btn-remove-absent" th:if="${absentItem.shift == 3}" th:attr="data-absent-id=${absentItem.id}">Remove</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div th:replace="fragments/admin-footer :: footer"></div>
@@ -57,7 +132,7 @@
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <script src="/vendors/js/jsCalendar.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="/vendors/js/sweetalert2.all.js"></script>
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="/js/off-canvas.js"></script>

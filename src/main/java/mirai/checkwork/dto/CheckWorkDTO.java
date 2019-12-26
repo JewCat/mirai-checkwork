@@ -1,26 +1,23 @@
 package mirai.checkwork.dto;
 
 import lombok.Data;
-
-import javax.persistence.Column;
-import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalTime;
 
 @Data
 public class CheckWorkDTO {
     private Long userId;
     private String userName;
-    private Date checkDate;
-    private Time checkInTime;
-    private Time checkOutTime;
-    private Long absentShifts;
+    private LocalTime checkInTime;
+    private LocalTime checkOutTime;
+    private Long checkId;
 
-    public CheckWorkDTO(Long userId, String userName, Date checkDate, Time checkInTime, Time checkOutTime, Long absentShifts) {
+    public CheckWorkDTO() { }
+
+    public CheckWorkDTO(Long userId, String userName, LocalTime checkInTime, LocalTime checkOutTime, Long checkId) {
         this.userId = userId;
         this.userName = userName;
-        this.checkDate = checkDate;
         this.checkInTime = checkInTime;
         this.checkOutTime = checkOutTime;
-        this.absentShifts = absentShifts;
+        this.checkId = checkId;
     }
 }

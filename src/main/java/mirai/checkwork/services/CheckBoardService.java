@@ -15,7 +15,6 @@ public interface CheckBoardService {
     void checkOut(Geolocation geolocation) throws OutDistanceException;
     boolean isCheckIn();
     boolean isCheckOut();
-    CheckBoard getCheckRecord(LocalDate checkDate);
+    CheckBoard getCheckRecordOfCurrentUser(LocalDate checkDate);
     List<CheckWorkDTO> getCheckList(LocalDate checkDate);
-    CheckWorkDTO getCheckDetail(Long userId, LocalDate checkDate);
 }

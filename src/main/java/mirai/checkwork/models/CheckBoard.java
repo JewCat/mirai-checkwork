@@ -5,6 +5,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -19,20 +21,12 @@ public class CheckBoard {
     @Column(name = "USER_ID")
     private Long userId;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "CHECK_DATE")
-    private Date checkDate;
+    @Column(name = "CHECK_DATE", columnDefinition = "DATE")
+    private LocalDate checkDate;
 
-    @Temporal(TemporalType.TIME)
-    @Column(name = "CHECK_IN_TIME")
-    private Date checkInTime;
+    @Column(name = "CHECK_IN_TIME", columnDefinition = "TIME")
+    private LocalTime checkInTime;
 
-    @Temporal(TemporalType.TIME)
-    @Column(name = "CHECK_OUT_TIME")
-    private Date checkOutTime;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", insertable = false, updatable = false)
-    @Fetch(FetchMode.JOIN)
-    private User user;
+    @Column(name = "CHECK_OUT_TIME", columnDefinition = "TIME")
+    private LocalTime checkOutTime;
 }

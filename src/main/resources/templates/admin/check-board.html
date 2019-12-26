@@ -10,7 +10,28 @@
     <link rel="stylesheet" type="text/css"  href="/vendors/css/vendor.bundle.base.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="/vendors/css/jsCalendar.css">
     <!-- End plugin css for this page -->
+    <style>
+        .my-jsCalendar {
+            transform: translateY(-50%);
+            top: 50%;
+        }
+        .my-jsCalendar-hide {
+            z-index: -999 !important;
+        }
+        .my-jsCalendar-show {
+            z-index: 1032 !important;
+        }
+        .shadow-layer {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 1031;
+            background: #000;
+            opacity: 0.8;
+        }
+    </style>
     <!-- inject:css -->
     <!-- endinject -->
     <!-- Layout styles -->
@@ -20,6 +41,9 @@
 </head>
 <body>
 <div class="container-scroller">
+    <div class="shadow-layer d-none"></div>
+    <div class="my-jsCalendar my-jsCalendar-hide material-theme turquoise position-fixed d-flex justify-content-center w-100" data-first-day-of-the-week="2"></div>
+
     <div th:replace="fragments/admin-header :: header"></div>
     <div class="container-fluid page-body-wrapper">
         <div th:replace="fragments/admin-sidebar :: sidebar"></div>
@@ -27,14 +51,29 @@
             <div class="content-wrapper">
                 <div class="card">
                     <div class="card-body">
-                        <table class="table table-responsive-lg">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                            </tr>
+                        <div class="d-flex align-items-center position-relative">
+                            <button class="btn btn-sm btn-gradient-success btn-date-picker">
+                                <i class="mdi mdi-calendar"></i>
+                            </button>
+                            <div class="pl-2 date-display" th:text="${#temporals.format(dateNow, 'dd/MM/yyyy')}"></div>
+                        </div>
+                        <table class="table table-bordered mt-2">
+                            <thead class="bg-gradient-success text-white">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Check In</th>
+                                    <th>Check Out</th>
+                                </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody class="check-list-tbody">
+                                <tr th:each="checkItem : ${checkList}">
+                                    <td th:text="${checkItem.getUserId()}"></td>
+                                    <td th:text="${checkItem.getUserName()}"></td>
+                                    <td th:text="${#temporals.format(checkItem.getCheckInTime(), 'HH:mm:ss')}"></td>
+                                    <td th:text="${#temporals.format(checkItem.getCheckOutTime(), 'HH:mm:ss')}"></td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -46,11 +85,83 @@
     <script src="/vendors/js/vendor.bundle.base.js"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
+    <script src="/vendors/js/jsCalendar.js"></script>
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="/js/off-canvas.js"></script>
     <script src="/js/hoverable-collapse.js"></script>
     <script src="/js/misc.js"></script>
+    <script>
+        let isDatePickerDisplay = false;
+        let myCalendar = jsCalendar.new(document.querySelector('.my-jsCalendar'));
+        let count = 0;
+
+        myCalendar.onDateClick(function(evt, date) {
+            closeDatePicker();
+            document.querySelector('.date-display').innerHTML = ('0' + date.getDate()).slice(-2) + '/' +
+                ('0' + (date.getMonth() + 1)).slice(-2) + '/' +
+                date.getFullYear();
+
+            $.ajax({
+                type: "GET",
+                url: '/admin/check-board/' + date.getTime(),
+            }).done(function(data) {
+                console.log(data);
+                // ...
+                document.querySelector('.check-list-tbody').innerHTML = '';
+                data.data.forEach(i => {
+                    let checkInTime = i.checkInTime != null
+                        ?   i.checkInTime
+                        :   '';
+                    let checkOutTime = i.checkOutTime != null
+                        ?   i.checkOutTime
+                        :   '';
+                    document.querySelector('.check-list-tbody').innerHTML +=
+                        `<tr>
+                            <td>${i.userId}</td>
+                            <td>${i.userName}</td>
+                            <td>${checkInTime}</td>
+                            <td>${checkOutTime}</td>
+                        </tr>`
+                })
+            }).fail(function(err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: err.responseJSON.message,
+                });
+            });
+        });
+
+        myCalendar.onMonthRender(function(index, element, info) {
+
+        });
+
+        document.querySelector('.btn-date-picker').addEventListener('click', function() {
+            if (isDatePickerDisplay) {
+                closeDatePicker();
+            }
+            else {
+                openDatePicker();
+            }
+        });
+
+        closeDatePicker = function() {
+            isDatePickerDisplay = false;
+            document.querySelector('.my-jsCalendar').classList.remove('my-jsCalendar-show');
+            document.querySelector('.my-jsCalendar').classList.add('my-jsCalendar-hide');
+            document.querySelector('.shadow-layer').classList.remove('d-block');
+            document.querySelector('.shadow-layer').classList.add('d-none');
+        };
+
+        openDatePicker = function() {
+            isDatePickerDisplay = true;
+            document.querySelector('.my-jsCalendar').classList.remove('my-jsCalendar-hide');
+            document.querySelector('.my-jsCalendar').classList.add('my-jsCalendar-show');
+            document.querySelector('.shadow-layer').classList.remove('d-none');
+            document.querySelector('.shadow-layer').classList.add('d-block');
+        };
+    </script>
     <!-- endinject -->
 </div>
 </body>

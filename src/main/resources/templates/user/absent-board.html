@@ -100,7 +100,7 @@
                             <button class="btn btn-lg btn-gradient-success mt-4 mx-auto w-50">Submit</button>
                         </form>
                         <div class="table-container px-2">
-                            <table class="table">
+                            <table class="table table-bordered">
                                 <thead class="bg-gradient-success text-white">
                                     <tr class="text-center">
                                         <th>Date</th>
@@ -109,6 +109,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr th:if="${absentList.isEmpty()}">
+                                        <td colspan="3" class="text-center font-italic">-- No data --</td>
+                                    </tr>
                                     <tr class="text-center" th:each="absentItem : ${absentList}">
                                         <td th:text="${#temporals.format(absentItem.absentDate, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${absentItem.shift <= 2 ? absentItem.shift : 'All'}"></td>
@@ -133,6 +136,7 @@
     <!-- Plugin js for this page -->
     <script src="/vendors/js/jsCalendar.js"></script>
     <script src="/vendors/js/sweetalert2.all.js"></script>
+    <script src="/vendors/js/http-client.js"></script>
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="/js/off-canvas.js"></script>

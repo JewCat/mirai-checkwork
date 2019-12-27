@@ -1,7 +1,9 @@
 package mirai.checkwork.controllers;
 
+import mirai.checkwork.dto.AbsentBoardDTO;
 import mirai.checkwork.dto.CheckWorkDTO;
 import mirai.checkwork.repositories.UserRepository;
+import mirai.checkwork.services.AbsentBoardService;
 import mirai.checkwork.services.CheckBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,13 +24,26 @@ public class AdminController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AbsentBoardService absentBoardService;
+
     @GetMapping("/check-board")
-    public String index(Model model) {
+    public String displayCheckBoard(Model model) {
         LocalDate date = LocalDate.now();
         List<CheckWorkDTO> checkList = checkBoardService.getCheckList(date);
         model.addAttribute("checkList", checkList);
         model.addAttribute("dateNow", date);
 
         return "admin/check-board";
+    }
+
+    @GetMapping("/absent-board")
+    public String displayAbsentBoard(Model model) {
+        LocalDate date = LocalDate.now();
+        List<AbsentBoardDTO> rs = absentBoardService.getListAbsentBoardAdmin(date);
+        model.addAttribute("absentList", rs);
+        model.addAttribute("dateNow", date);
+
+        return "admin/absent-board";
     }
 }

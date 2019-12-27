@@ -12,27 +12,8 @@
     <!-- Plugin css for this page -->
     <link rel="stylesheet" href="/vendors/css/jsCalendar.css">
     <!-- End plugin css for this page -->
-    <style>
-        .my-jsCalendar {
-            transform: translateY(-50%);
-            top: 50%;
-        }
-        .my-jsCalendar-hide {
-            z-index: -999 !important;
-        }
-        .my-jsCalendar-show {
-            z-index: 1032 !important;
-        }
-        .shadow-layer {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            z-index: 1031;
-            background: #000;
-            opacity: 0.8;
-        }
-    </style>
     <!-- inject:css -->
+    <link rel="stylesheet" href="/css/date-picker.css">
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -62,17 +43,28 @@
                                 <tr>
                                     <th>UID</th>
                                     <th>Name</th>
-                                    <th>Check In</th>
-                                    <th>Check Out</th>
+                                    <th>Shift</th>
                                 </tr>
                             </thead>
-                            <tbody class="check-list-tbody">
-                                <tr th:each="checkItem : ${checkList}">
-                                    <td th:text="${checkItem.getUserId()}"></td>
-                                    <td th:text="${checkItem.getUserName()}"></td>
-                                    <td th:text="${#temporals.format(checkItem.getCheckInTime(), 'HH:mm:ss')}"></td>
-                                    <td th:text="${#temporals.format(checkItem.getCheckOutTime(), 'HH:mm:ss')}"></td>
+                            <tbody class="absent-list-tbody">
+                            <th:block th:each="absentItem : ${absentList}" th:switch="${absentItem.getAbsentShift()}">
+                                <tr th:case="1" class="bg-gradient-warning">
+                                    <td th:text="${absentItem.getUserId()}"></td>
+                                    <td th:text="${absentItem.getUserName()}"></td>
+                                    <td>1st</td>
                                 </tr>
+                                <tr th:case="2" class="bg-gradient-primary">
+                                    <td th:text="${absentItem.getUserId()}"></td>
+                                    <td th:text="${absentItem.getUserName()}"></td>
+                                    <td>2nd</td>
+                                </tr>
+                                <tr th:case="3" class="bg-gradient-danger">
+                                    <td th:text="${absentItem.getUserId()}"></td>
+                                    <td th:text="${absentItem.getUserName()}"></td>
+                                    <td>All day</td>
+                                </tr>
+                            </th:block>
+
                             </tbody>
                         </table>
                     </div>
@@ -93,7 +85,7 @@
     <script src="/js/off-canvas.js"></script>
     <script src="/js/hoverable-collapse.js"></script>
     <script src="/js/misc.js"></script>
-    <script src="/js/admin/admin-check-board.js"></script>
+    <script src="/js/admin/admin-absent-board.js"></script>
     <!-- endinject -->
 </div>
 </body>

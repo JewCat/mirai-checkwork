@@ -40,7 +40,7 @@ myCalendar.onDateRender(function(date, element, info) {
 });
 
 myCalendar.onDateClick(function(event, date){
-    if (date.getTime() < new Date().setHours(0,0,0,0)) {
+    if (date.getTime() <= new Date().setHours(23,59,59)) {
 
     }
     else if (event.target.classList.contains('bg-gradient-warning')) {
@@ -105,28 +105,23 @@ myCalendar.refresh();
 document.querySelector('form[name=frm-absent]').addEventListener('submit', function(evt) {
     evt.preventDefault();
 
-    $.ajax({
-        type: "POST",
-        url: '/absent/add',
-        data: JSON.stringify(datePicked),
-        dataType: 'json',
-        contentType: 'application/json'
-    }).done(function(data) {
-        console.log(data);
-        Swal.fire({
-            icon: 'success',
-            title: 'OK',
-            text: data.message,
-        }).then(rs => {
-            window.location.reload();
+    HttpClient.post('/absent/add', datePicked,
+        function (res) {
+            Swal.fire({
+                icon: 'success',
+                title: 'OK',
+                text: res.message,
+            }).then(rs => {
+                window.location.reload();
+            });
+        },
+        function (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: err.responseJSON.message,
+            });
         });
-    }).fail(function(err) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: err.responseJSON.message,
-        });
-    });
 });
 
 // Remove Absent
@@ -140,28 +135,23 @@ document.querySelectorAll('.btn-remove-absent').forEach(function(i) {
             showCancelButton: true,
         }).then(rs => {
             if (rs.value) {
-                $.ajax({
-                    type: "POST",
-                    url: '/absent/remove',
-                    data: JSON.stringify(absentId),
-                    dataType: 'json',
-                    contentType: 'application/json'
-                }).done(function(data) {
-                    console.log(data);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'OK',
-                        text: data.message,
-                    }).then(rs => {
-                        window.location.reload();
+                HttpClient.post('/absent/remove', absentId,
+                    function(res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'OK',
+                            text: res.message,
+                        }).then(rs => {
+                            window.location.reload();
+                        });
+                    },
+                    function(err) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: err.responseJSON.message,
+                        });
                     });
-                }).fail(function(err) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: err.responseJSON.message,
-                    });
-                });
             }
         })
     });

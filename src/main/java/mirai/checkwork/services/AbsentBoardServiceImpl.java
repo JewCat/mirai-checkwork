@@ -2,6 +2,7 @@ package mirai.checkwork.services;
 
 import mirai.checkwork.common.AbsentRequest;
 import mirai.checkwork.common.AuthDetails;
+import mirai.checkwork.dto.AbsentBoardDTO;
 import mirai.checkwork.models.AbsentBoard;
 import mirai.checkwork.models.User;
 import mirai.checkwork.repositories.AbsentBoardRepository;
@@ -45,7 +46,10 @@ public class AbsentBoardServiceImpl implements AbsentBoardService {
         req.getAbsentFirstShift().forEach(absentTime -> {
             AbsentBoard absentBoard = null;
             LocalDate date = Instant.ofEpochMilli(absentTime).atZone(ZoneId.systemDefault()).toLocalDate();
-            if (!dateCheckList.contains(date)) {
+            if (!date.isAfter(LocalDate.now())) {
+
+            }
+            else if (!dateCheckList.contains(date)) {
                 absentBoard = new AbsentBoard();
                 absentBoard.setAbsentDate(date);
                 absentBoard.setUserId(getAuthUser().getId());
@@ -60,13 +64,15 @@ public class AbsentBoardServiceImpl implements AbsentBoardService {
             }
             absentBoard.setShift(1);
             absentBoardList.add(absentBoard);
-            System.out.println(absentBoard);
         });
 
         req.getAbsentSecondShift().forEach(absentTime -> {
             AbsentBoard absentBoard = null;
             LocalDate date = Instant.ofEpochMilli(absentTime).atZone(ZoneId.systemDefault()).toLocalDate();
-            if (!dateCheckList.contains(date)) {
+            if (!date.isAfter(LocalDate.now())) {
+
+            }
+            else if (!dateCheckList.contains(date)) {
                 absentBoard = new AbsentBoard();
                 absentBoard.setAbsentDate(date);
                 absentBoard.setUserId(getAuthUser().getId());
@@ -81,13 +87,15 @@ public class AbsentBoardServiceImpl implements AbsentBoardService {
             }
             absentBoard.setShift(2);
             absentBoardList.add(absentBoard);
-            System.out.println(absentBoard);
         });
 
         req.getAbsentAllDay().forEach(absentTime -> {
             AbsentBoard absentBoard = null;
             LocalDate date = Instant.ofEpochMilli(absentTime).atZone(ZoneId.systemDefault()).toLocalDate();
-            if (!dateCheckList.contains(date)) {
+            if (!date.isAfter(LocalDate.now())) {
+
+            }
+            else if (!dateCheckList.contains(date)) {
                 absentBoard = new AbsentBoard();
                 absentBoard.setAbsentDate(date);
                 absentBoard.setUserId(getAuthUser().getId());
@@ -102,7 +110,6 @@ public class AbsentBoardServiceImpl implements AbsentBoardService {
             }
             absentBoard.setShift(3);
             absentBoardList.add(absentBoard);
-            System.out.println(absentBoard);
         });
 
         absentBoardRepository.saveAll(absentBoardList);
@@ -131,5 +138,10 @@ public class AbsentBoardServiceImpl implements AbsentBoardService {
     public void removeAbsent(Long absentId) {
         AbsentBoard absentBoard = absentBoardRepository.getOne(absentId);
         absentBoardRepository.delete(absentBoard);
+    }
+
+    @Override
+    public List<AbsentBoardDTO> getListAbsentBoardAdmin(LocalDate date) {
+        return absentBoardRepository.getAbsentDTOList(date);
     }
 }

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AuthController {
     @GetMapping("/")
     public String index() {
-        Role role = ((AuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+        Role role = ((AuthDetails) SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal())
             .getUser()
             .getRole();
 

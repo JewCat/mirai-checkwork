@@ -43,25 +43,22 @@ form.addEventListener('submit', function(evt) {
         'latitude': latitude
     };
 
-    $.ajax({
-        type: "POST",
-        url: '/check',
-        data: JSON.stringify(data),
-        dataType: 'json',
-        contentType: 'application/json'
-    }).done(function(data) {
-        Swal.fire({
-            icon: 'success',
-            title: 'OK',
-            text: data.data.checkNum == 1 ? 'You have checked-in successfully !' : 'You have checked-out successfully !',
-        }).then(rs => {
-            window.location.reload();
+    HttpClient.post('/check', data,
+        function (res) {
+            Swal.fire({
+                icon: 'success',
+                title: 'OK',
+                text: res.data.checkNum == 1 ? 'You have checked-in successfully !' : 'You have checked-out successfully !',
+            }).then(rs => {
+                window.location.reload();
+            });
+        },
+        function (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: err.responseJSON.message,
+            });
         });
-    }).fail(function(err) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: err.responseJSON.message,
-        });
-    });
+
 });

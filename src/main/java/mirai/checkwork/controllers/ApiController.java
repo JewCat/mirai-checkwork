@@ -3,6 +3,7 @@ package mirai.checkwork.controllers;
 import mirai.checkwork.common.AbsentRequest;
 import mirai.checkwork.common.ApiResponse;
 import mirai.checkwork.common.Geolocation;
+import mirai.checkwork.dto.AbsentBoardDTO;
 import mirai.checkwork.dto.CheckWorkDTO;
 import mirai.checkwork.exceptions.OutDistanceException;
 import mirai.checkwork.services.AbsentBoardService;
@@ -65,6 +66,15 @@ public class ApiController {
         ApiResponse res = new ApiResponse();
         LocalDate localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDate();
         List<CheckWorkDTO> checkList = checkBoardService.getCheckList(localDate);
+        res.setData(checkList);
+        return res;
+    }
+
+    @GetMapping("/admin/absent-board/{date}")
+    public ApiResponse getAbsentList(@PathVariable("date") Long date) {
+        ApiResponse res = new ApiResponse();
+        LocalDate localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDate();
+        List<AbsentBoardDTO> checkList = absentBoardService.getListAbsentBoardAdmin(localDate);
         res.setData(checkList);
         return res;
     }

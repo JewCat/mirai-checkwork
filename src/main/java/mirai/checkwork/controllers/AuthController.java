@@ -18,7 +18,7 @@ public class AuthController {
 
         switch (role) {
             case ROLE_ADMIN: return "redirect:admin";
-            case ROLE_USER: return "redirect:check";
+            case ROLE_STAFF: return "redirect:check";
             default: return "";
         }
     }

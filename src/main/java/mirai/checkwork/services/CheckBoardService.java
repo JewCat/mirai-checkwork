@@ -1,5 +1,6 @@
 package mirai.checkwork.services;
 
+import mirai.checkwork.common.CheckEditRequest;
 import mirai.checkwork.common.Geolocation;
 import mirai.checkwork.dto.CheckWorkDTO;
 import mirai.checkwork.exceptions.NullGeolocationException;
@@ -17,4 +18,6 @@ public interface CheckBoardService {
     boolean isCheckOut();
     CheckBoard getCheckRecordOfCurrentUser(LocalDate checkDate);
     List<CheckWorkDTO> getCheckList(LocalDate checkDate);
+    void editById(CheckEditRequest req);
+    CheckBoard getById(Long id);
 }

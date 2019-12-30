@@ -2,6 +2,7 @@ package mirai.checkwork.controllers;
 
 import mirai.checkwork.dto.AbsentBoardDTO;
 import mirai.checkwork.dto.CheckWorkDTO;
+import mirai.checkwork.models.User;
 import mirai.checkwork.repositories.UserRepository;
 import mirai.checkwork.services.AbsentBoardService;
 import mirai.checkwork.services.CheckBoardService;
@@ -45,5 +46,12 @@ public class AdminController {
         model.addAttribute("dateNow", date);
 
         return "admin/absent-board";
+    }
+
+    @GetMapping("/staffs/info")
+    public String staffsInfoShow(Model model) {
+        List<User> userList = userRepository.findAll();
+        model.addAttribute("userList", userList);
+        return "admin/staffs-info-board";
     }
 }

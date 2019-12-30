@@ -28,13 +28,15 @@ public class DbSeeder {
             user.setUsername("admin");
             user.setPassword(passwordEncoder.encode("123456"));
             user.setRole(Role.ROLE_ADMIN);
+            user.setStatus(1);
             userRepository.save(user);
 
             User user2 = new User();
             user2.setName("test");
             user2.setUsername("test");
             user2.setPassword(passwordEncoder.encode("123456"));
-            user2.setRole(Role.ROLE_USER);
+            user2.setRole(Role.ROLE_STAFF);
+            user2.setStatus(1);
             userRepository.save(user2);
         }
     }

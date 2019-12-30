@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class AbsentRequest {
+public class AbsentAddRequest {
     private List<Long> absentFirstShift;
     private List<Long> absentSecondShift;
     private List<Long> absentAllDay;

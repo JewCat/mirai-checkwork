@@ -1,17 +1,19 @@
 package mirai.checkwork.controllers;
 
-import mirai.checkwork.common.AbsentRequest;
+import mirai.checkwork.common.AbsentAddRequest;
 import mirai.checkwork.common.ApiResponse;
+import mirai.checkwork.common.CheckEditRequest;
 import mirai.checkwork.common.Geolocation;
 import mirai.checkwork.dto.AbsentBoardDTO;
 import mirai.checkwork.dto.CheckWorkDTO;
 import mirai.checkwork.exceptions.OutDistanceException;
+import mirai.checkwork.models.CheckBoard;
 import mirai.checkwork.services.AbsentBoardService;
 import mirai.checkwork.services.CheckBoardService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -46,7 +48,7 @@ public class ApiController {
     }
 
     @PostMapping("/absent/add")
-    public ApiResponse addAbsent(@RequestBody AbsentRequest req) {
+    public ApiResponse addAbsent(@RequestBody AbsentAddRequest req) {
         ApiResponse res = new ApiResponse();
         absentBoardService.addAbsent(req);
         res.setData(req);
@@ -76,6 +78,23 @@ public class ApiController {
         LocalDate localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDate();
         List<AbsentBoardDTO> checkList = absentBoardService.getListAbsentBoardAdmin(localDate);
         res.setData(checkList);
+        return res;
+    }
+
+    @PostMapping("/admin/check-board/edit")
+    public ApiResponse editCheckBoard(@RequestBody CheckEditRequest req) {
+        ApiResponse res = new ApiResponse();
+        checkBoardService.editById(req);
+        return res;
+    }
+
+    @GetMapping("/admin/check-board/id/{id}")
+    public ApiResponse getCheckRecord(@PathVariable("id") Long id) {
+        ApiResponse res = new ApiResponse();
+
+        CheckBoard ckb = checkBoardService.getById(id);
+        res.setData(ckb);
+
         return res;
     }
 }

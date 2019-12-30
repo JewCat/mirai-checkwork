@@ -1,6 +1,6 @@
 package mirai.checkwork.services;
 
-import mirai.checkwork.common.AbsentRequest;
+import mirai.checkwork.common.AbsentAddRequest;
 import mirai.checkwork.common.AuthDetails;
 import mirai.checkwork.dto.AbsentBoardDTO;
 import mirai.checkwork.models.AbsentBoard;
@@ -13,12 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +32,7 @@ public class AbsentBoardServiceImpl implements AbsentBoardService {
     }
 
     @Override
-    public void addAbsent(AbsentRequest req) {
+    public void addAbsent(AbsentAddRequest req) {
         List<AbsentBoard> absentBoardList = new ArrayList<>();
 
         List<AbsentBoard> checkList = getListAfterCurrentDateAndUser();

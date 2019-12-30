@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" type="text/css"  href="/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" type="text/css"  href="/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="/vendors/css/jsCalendar.css">
+    <link rel="stylesheet" href="/vendors/css/wickedpicker.css">
+    <!-- End plugin css for this page -->
+    <style>
+        .my-jsCalendar {
+            transform: translateY(-50%);
+            top: 50%;
+        }
+        .my-jsCalendar-hide {
+            z-index: -999 !important;
+        }
+        .my-jsCalendar-show {
+            z-index: 1032 !important;
+        }
+        .shadow-layer {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 1031;
+            background: #000;
+            opacity: 0.8;
+        }
+    </style>
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="/images/favicon.png">
+</head>
+<body>
+<div class="container-scroller">
+    <div class="shadow-layer d-none"></div>
+    <div class="my-jsCalendar my-jsCalendar-hide material-theme turquoise position-fixed d-flex justify-content-center w-100" data-first-day-of-the-week="2"></div>
+
+    <div th:replace="fragments/admin-header :: header"></div>
+    <div class="container-fluid page-body-wrapper">
+        <div th:replace="fragments/admin-sidebar :: sidebar"></div>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered mt-2">
+                            <thead class="bg-gradient-success text-white">
+                            <tr>
+                                <th>UID</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody class="check-list-tbody">
+                            <tr th:each="user : ${userList}">
+                                <td th:text="${user.getId()}"></td>
+                                <td th:text="${user.getName()}"></td>
+                                <td th:text="${user.getRole().ordinal() == 0 ? 'Admin' : 'Staff'}"></td>
+                                <td th:text="${user.getStatus() == 1 ? 'Active' : 'Inactive'}"></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="fragments/admin-footer :: footer"></div>
+        </div>
+    </div>
+    <!-- plugins:js -->
+    <script src="/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="/vendors/js/sweetalert2.all.js"></script>
+    <script src="/vendors/js/jsCalendar.js"></script>
+    <script src="/vendors/js/http-client.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="/js/off-canvas.js"></script>
+    <script src="/js/hoverable-collapse.js"></script>
+    <script src="/js/misc.js"></script>
+    <!-- endinject -->
+</div>
+</body>
+</html>

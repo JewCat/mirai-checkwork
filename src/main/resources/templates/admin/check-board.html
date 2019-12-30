@@ -11,6 +11,7 @@
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <link rel="stylesheet" href="/vendors/css/jsCalendar.css">
+    <link rel="stylesheet" href="/vendors/css/wickedpicker.css">
     <!-- End plugin css for this page -->
     <style>
         .my-jsCalendar {
@@ -64,6 +65,7 @@
                                     <th>Name</th>
                                     <th>Check In</th>
                                     <th>Check Out</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody class="check-list-tbody">
@@ -72,9 +74,34 @@
                                     <td th:text="${checkItem.getUserName()}"></td>
                                     <td th:text="${#temporals.format(checkItem.getCheckInTime(), 'HH:mm:ss')}"></td>
                                     <td th:text="${#temporals.format(checkItem.getCheckOutTime(), 'HH:mm:ss')}"></td>
+                                    <td>
+                                        <button th:if="${checkItem.getCheckId() != 0}" class="btn btn-sm btn-gradient-success" onclick="showModal(this)" th:attr="data-id=${checkItem.getCheckId()}">
+                                            <i class="mdi mdi-table-edit"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="modal" tabindex="-1" role="dialog" id="edit-modal">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-gradient-success">
+                                        <h5 class="modal-title text-white">Edit check time</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body d-flex">
+                                        <input class="form-control timepicker" id="edit-checkin-time">
+                                        <input class="form-control timepicker" id="edit-checkout-time">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-gradient-danger" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-gradient-success btn-edit">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,6 +115,7 @@
     <script src="/vendors/js/sweetalert2.all.js"></script>
     <script src="/vendors/js/jsCalendar.js"></script>
     <script src="/vendors/js/http-client.js"></script>
+    <script src="/vendors/js/wickedpicker.js"></script>
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="/js/off-canvas.js"></script>

@@ -1,17 +1,16 @@
 package mirai.checkwork.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "CHECK_BOARD")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CheckBoard {
     @Id
     @GeneratedValue

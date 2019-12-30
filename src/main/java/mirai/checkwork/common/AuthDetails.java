@@ -21,7 +21,7 @@ public class AuthDetails implements UserDetails {
         switch (user.getRole()) {
             case ROLE_ADMIN: role = new SimpleGrantedAuthority("ROLE_ADMIN");
                 break;
-            case ROLE_USER: role = new SimpleGrantedAuthority("ROLE_USER");
+            case ROLE_STAFF: role = new SimpleGrantedAuthority("ROLE_STAFF");
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + user.getRole());

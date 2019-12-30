@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -10,13 +10,14 @@
             <li class="nav-item nav-profile">
                 <a href="#" class="nav-link">
                     <div class="nav-profile-image">
-                        <img src="/images/faces/face1.jpg" alt="profile">
+                        <img src="/images/faces/user.jpg" alt="profile">
                         <span class="login-status online"></span>
                         <!--change to offline or busy as needed-->
                     </div>
                     <div class="nav-profile-text d-flex flex-column">
                         <span class="font-weight-bold mb-2" th:text="${#authorization.getAuthentication().getName()}"></span>
-                        <span class="text-secondary text-small">Manager</span>
+                        <span class="text-secondary text-small" sec:authorize="hasRole('ROLE_ADMIN')">Admin</span>
+                        <span class="text-secondary text-small" sec:authorize="hasRole('ROLE_STAFF')">Staff</span>
                     </div>
                     <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
                 </a>
@@ -47,7 +48,7 @@
                 </a>
                 <div class="collapse" id="users">
                     <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"><a class="nav-link" href="#">Info</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/admin/staffs/info">Info</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Statistics</a></li>
                     </ul>
                 </div>

@@ -1,7 +1,9 @@
 package mirai.checkwork.services;
 
 import mirai.checkwork.common.AuthDetails;
+import mirai.checkwork.common.CheckEditRequest;
 import mirai.checkwork.common.Geolocation;
+import mirai.checkwork.common.Role;
 import mirai.checkwork.dto.CheckWorkDTO;
 import mirai.checkwork.exceptions.NullGeolocationException;
 import mirai.checkwork.exceptions.OutDistanceException;
@@ -14,6 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Date;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -133,7 +138,7 @@ public class CheckBoardServiceImpl implements CheckBoardService {
             .collect(Collectors.toList());
         List<CheckWorkDTO> uncheckList = userRepository.findAll()
             .stream()
-            .filter(user -> !checkIdList.contains(user.getId()))
+            .filter(user -> !checkIdList.contains(user.getId()) && user.getRole() != Role.ROLE_ADMIN)
             .map(user -> {
                 CheckWorkDTO checkWorkDTO = new CheckWorkDTO();
                 checkWorkDTO.setUserId(user.getId());
@@ -146,4 +151,30 @@ public class CheckBoardServiceImpl implements CheckBoardService {
         resultList.sort((i, j) -> i.getCheckId() < j.getCheckId() ? 1 : -1);
         return resultList;
     }
+
+    @Override
+    public void editById(CheckEditRequest req) {
+        CheckBoard checkBoard = checkBoardRepository.existsById(req.getCheckId())
+            ? checkBoardRepository.getOne(req.getCheckId())
+            : null;
+        LocalTime checkInTime = Instant.ofEpochMilli(req.getCheckInTime()).atZone(ZoneId.systemDefault()).toLocalTime();
+        LocalTime checkOutTime = Instant.ofEpochMilli(req.getCheckOutTime()).atZone(ZoneId.systemDefault()).toLocalTime();
+
+        if (checkBoard != null) {
+            checkBoard.setCheckInTime(checkInTime);
+            checkBoard.setCheckOutTime(checkOutTime);
+            checkBoardRepository.save(checkBoard);
+        }
+
+    }
+
+    @Override
+    public CheckBoard getById(Long id) {
+        if (checkBoardRepository.existsById(id)) {
+            return checkBoardRepository.getOne(id);
+        }
+
+        return null;
+    }
+
 }

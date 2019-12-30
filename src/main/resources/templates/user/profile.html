@@ -12,6 +12,13 @@
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
+    <style>
+        .img-wrapper img {
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+        }
+    </style>
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -22,10 +29,30 @@
 <div class="container-scroller">
     <div th:replace="fragments/admin-header :: header"></div>
     <div class="container-fluid page-body-wrapper">
-        <div th:replace="fragments/admin-sidebar :: sidebar"></div>
+        <div th:replace="fragments/user-sidebar :: sidebar"></div>
         <div class="main-panel">
             <div class="content-wrapper">
-                <div>Coming soon !</div>
+                <div class="card">
+                    <div class="card-body">
+                        <form class="d-flex">
+                            <div class="d-flex col-4">
+                                <div class="img-wrapper">
+                                    <img src="/images/faces/user.jpg">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <div>UID: 1</div>
+                                <div>Role: Staff</div>
+                                    <div>Status: Active</div>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <input class="form-control" name="">
+                                <input class="form-control" name="">
+                                <input class="form-control" name="">
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div th:replace="fragments/admin-footer :: footer"></div>
         </div>
@@ -34,6 +61,8 @@
     <script src="/vendors/js/vendor.bundle.base.js"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
+    <script src="/vendors/js/sweetalert2.all.js"></script>
+    <script src="/vendors/js/http-client.js"></script>
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="/js/off-canvas.js"></script>

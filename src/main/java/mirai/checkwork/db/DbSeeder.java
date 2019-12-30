@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class DbSeeder {
     @Autowired
     UserRepository userRepository;
+
     @Autowired
     PasswordEncoder passwordEncoder;
 

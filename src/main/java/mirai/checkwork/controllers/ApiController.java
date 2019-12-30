@@ -8,12 +8,13 @@ import mirai.checkwork.dto.AbsentBoardDTO;
 import mirai.checkwork.dto.CheckWorkDTO;
 import mirai.checkwork.exceptions.OutDistanceException;
 import mirai.checkwork.models.CheckBoard;
+import mirai.checkwork.models.User;
+import mirai.checkwork.repositories.UserRepository;
 import mirai.checkwork.services.AbsentBoardService;
 import mirai.checkwork.services.CheckBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -28,6 +29,9 @@ public class ApiController {
 
     @Autowired
     AbsentBoardService absentBoardService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @PostMapping("/check")
     public ApiResponse check(@RequestBody Geolocation geolocation) throws OutDistanceException {
@@ -94,6 +98,19 @@ public class ApiController {
 
         CheckBoard ckb = checkBoardService.getById(id);
         res.setData(ckb);
+
+        return res;
+    }
+
+    @PostMapping("/admin/check-board/update-status/{id}")
+    public ApiResponse changeStatus(@PathVariable("id") Long id) {
+        ApiResponse res = new ApiResponse();
+
+        if (userRepository.existsById(id)) {
+            User user = userRepository.getOne(id);
+            user.setStatus(user.getStatus() == 0 ? 1 : 0);
+            userRepository.save(user);
+        }
 
         return res;
     }

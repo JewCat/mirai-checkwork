@@ -68,7 +68,10 @@
                                 <td th:text="${user.getName()}"></td>
                                 <td th:text="${user.getRole().ordinal() == 0 ? 'Admin' : 'Staff'}"></td>
                                 <td th:text="${user.getStatus() == 1 ? 'Active' : 'Inactive'}"></td>
-                                <td></td>
+                                <td>
+                                    <button th:if="${user.getStatus() == 0 && user.getRole().ordinal() != 0}" th:attr="data-id=${user.getId()}" class="btn btn-sm btn-gradient-success btn-change-status">Active</button>
+                                    <button th:if="${user.getStatus() == 1 && user.getRole().ordinal() != 0}" th:attr="data-id=${user.getId()}" class="btn btn-sm btn-gradient-danger btn-change-status">Inactive</button>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -90,6 +93,29 @@
     <script src="/js/off-canvas.js"></script>
     <script src="/js/hoverable-collapse.js"></script>
     <script src="/js/misc.js"></script>
+    <script>
+        document.querySelectorAll('.btn-change-status').forEach(i => {
+            i.addEventListener('click', e => {
+                HttpClient.post(`/admin/check-board/update-status/${e.target.dataset.id}`, '',
+                    res => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'OK',
+                        }).then(rs => {
+                            window.location.reload();
+                        });
+                    },
+                    err => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: err.responseJSON.message,
+                        });
+                    });
+
+            });
+        });
+    </script>
     <!-- endinject -->
 </div>
 </body>

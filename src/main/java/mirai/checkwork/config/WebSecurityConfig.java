@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .authorizeRequests()
             .antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/login").permitAll() // Cho phép tất cả mọi người truy cập vào 2 địa chỉ này
+            .antMatchers("/login", "/register").permitAll() // Cho phép tất cả mọi người truy cập vào 2 địa chỉ này
             .antMatchers("/css/**", "/images/**", "/fonts/**", "/js/**", "/vendors/**").permitAll()
             .anyRequest().authenticated() // Tất cả các request khác đều cần phải xác thực mới được truy cập
             .and()

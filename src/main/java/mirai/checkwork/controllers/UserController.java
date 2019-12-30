@@ -56,4 +56,9 @@ public class UserController {
         model.addAttribute("absentList", absentList);
         return "user/absent-board";
     }
+
+    @GetMapping("/profile")
+    public String profileIndex() {
+        return "user/profile";
+    }
 }
